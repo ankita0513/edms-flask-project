@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+
+<div class="checkout-container">
+
+  <!-- ================= LEFT SECTION ================= -->
+  <div class="checkout-left">
+
+    <form method="POST">
+
+      <!-- PERSONAL DETAILS -->
+      <section class="card">
+        <h2>Personal Details</h2>
+
+        <div class="form-row">
+          <!-- First Name -->
+          <input
+            type="text"
+            name="customer_name"
+            placeholder="First Name"
+            required
+          >
+
+          <!-- Email (Read Only) -->
+          <input
+            type="email"
+            value="{{ user.email }}"
+            readonly
+          >
+        </div>
+
+        <div class="form-row">
+          <!-- Phone Number -->
+          <input
+            type="text"
+            name="phone"
+            placeholder="Mobile Number"
+            required
+          >
+        </div>
+      </section>
+
+      <!-- DELIVERY ADDRESS -->
+      <section class="card">
+        <h2>Delivery Address</h2>
+
+        <div class="form-row">
+          <textarea
+            name="address"
+            placeholder="Enter full delivery address"
+            required
+          >{{ user.default_address }}</textarea>
+        </div>
+      </section>
+
+      <!-- ORDER DETAILS -->
+      <section class="card">
+        <h2>Order Details</h2>
+
+        <label>Quantity (Available: {{ product.stock }})</label>
+        <input
+          type="number"
+          name="quantity"
+          value="1"
+          min="1"
+          max="{{ product.stock }}"
+          required
+        >
+      </section>
+
+  </div>
+
+  <!-- ================= RIGHT SECTION ================= -->
+  <div class="checkout-right">
+
+      <section class="summary-card">
+        <h3>Order Summary</h3>
+
+        <div class="price-row">
+          <span>Product</span>
+          <span>{{ product.name }}</span>
+        </div>
+
+        <div class="price-row">
+          <span>Price</span>
+          <span>₹ {{ "%.2f"|format(product.price) }}</span>
+        </div>
+
+        <hr>
+
+        <div class="price-total">
+          <span>Total</span>
+          <span>₹ {{ "%.2f"|format(product.price) }}</span>
+        </div>
+      </section>
+
+      <!-- PROCEED TO PAY BUTTON -->
+      <button type="submit" class="pay-btn">
+        Proceed to Pay
+      </button>
+
+    </form>
+  </div>
+
+</div>
+<script>
+  // Get the quantity input and total span
+  const quantityInput = document.querySelector('input[name="quantity"]');
+  const totalSpan = document.querySelector('.price-total span:last-child');
+
+  // Safely inject the unit price as a JS number
+  const unitPrice = Number("{{ product.price }}");
+
+  function updateTotal() {
+    const qty = parseInt(quantityInput.value) || 1;
+    totalSpan.textContent = '₹ ' + (unitPrice * qty).toFixed(2);
+  }
+
+  quantityInput.addEventListener('input', updateTotal);
+  updateTotal(); // initialize
+</script>
+
+
+{% endblock %}

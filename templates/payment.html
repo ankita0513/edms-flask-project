@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Payment</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="payment-page">
+    <div class="container">
+        <h2>Complete Payment</h2>
+
+        <div class="order-details">
+            <p><strong>Product:</strong> {{ order.name }}</p>
+            <p><strong>Quantity:</strong> {{ order.quantity }}</p>
+            <p><strong>Total:</strong> ${{ "%.2f"|format(order.total_price) }}</p>
+        </div>
+
+        <form method="POST">
+            <label>Payment Method</label>
+            <select name="payment_method" id="payment_method" required onchange="toggleFields()">
+                <option value="">-- Select --</option>
+                <option value="Card">Card</option>
+                <option value="UPI">UPI</option>
+                <option value="Cash on Delivery">Cash on Delivery</option>
+            </select>
+
+            <!-- Card Fields -->
+            <div id="card-fields" class="hidden">
+                <input type="text" placeholder="Card Number (Demo)" maxlength="16">
+                <div class="row">
+                    <input type="text" placeholder="MM/YY" maxlength="5">
+                    <input type="password" placeholder="CVV" maxlength="3">
+                </div>
+            </div>
+
+            <!-- UPI Fields -->
+            <div id="upi-fields" class="hidden">
+                <input type="text" placeholder="UPI ID (example@upi)">
+            </div>
+
+            <button type="submit" class="btn">Confirm Payment</button>
+        </form>
+
+        <a href="{{ url_for('orders') }}" class="back-link">Back to Orders</a>
+    </div>
+</div>
+
+<script>
+function toggleFields() {
+    const method = document.getElementById("payment_method").value;
+    document.getElementById("card-fields").classList.add("hidden");
+    document.getElementById("upi-fields").classList.add("hidden");
+
+    if (method === "Card") {
+        document.getElementById("card-fields").classList.remove("hidden");
+    } 
+    else if (method === "UPI") {
+        document.getElementById("upi-fields").classList.remove("hidden");
+    }
+}
+</script>
+
+</body>
+</html>
